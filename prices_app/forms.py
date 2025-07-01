@@ -3,33 +3,23 @@ from allauth.account.forms import SignupForm, LoginForm
 from prices_app.models import PersonModel
 
 class PricesForm(forms.Form):
-    name = forms.CharField(widget=forms.URLInput(attrs={
-            'style': 'border-radius: 0;',
-            'type': 'search',
-            'class': 'form-control',
-            'id': 'autocomplete_basic',
-            'aria-controls': 'autoComplete_list_1',
-            'aria-autocomplete': 'both',
-            'placeholder': "  Iм'я..."}))
-    telegram = forms.CharField(widget=forms.URLInput(attrs={
-            'style': 'border-radius: 0;',
-            'type': 'search',
-            'class': 'form-control',
-            'id': 'autocomplete_basic',
-            'aria-controls': 'autoComplete_list_1',
-            'aria-autocomplete': 'both',
-            'placeholder': '  Телеграм (username)...'}))
     mail = forms.EmailField(widget=forms.URLInput(attrs={
-            'style': 'border-radius: 0;',
+            'style': 'border-radius: 0; height: 50px; '
+                     'background-color: transparent; '
+                     'border: none; '
+                     'border-bottom: 1px solid white; '
+                     'color: white; '
+                     'box-sizing: border-box; '
+                     'outline: none; ',
             'type': 'search',
             'class': 'form-control',
             'id': 'autocomplete_basic',
             'aria-controls': 'autoComplete_list_1',
             'aria-autocomplete': 'both',
-            'placeholder': '  Пошта...'}))
+            'placeholder': 'Пошта...'}))
 
     URL_CHOICES = [
-        ('', 'магазин'),
+        ('', ''),
         ('allo', 'allo.com'),
         ('comfy', 'comfy.ua'),
         ('epicentr', 'epicentr.ua'),
@@ -40,26 +30,25 @@ class PricesForm(forms.Form):
         ('f', 'f.ua'),
         ('moyo', 'moyo.ua'),
         ('citrus', 'ctrs.com.ua'),
-        ('eva', 'eva.ua'),
         ('intertop', 'intertop.ua'),
         ('stylus', 'stylus.ua'),
         ('yakaboo', 'yakaboo.ua'),
         ('deka', 'deka.ua'),
-        ('bookye', 'book-ye.com.ua'),
-        ('zara', 'zara.com'),
         ('eldorado', 'eldorado.ua'),
-        ('telemart', 'telemart.ua'),
         ('osport', 'osport.ua'),
         ('bi', 'bi.ua'),
-        ('sinsay', 'sinsay.com'),
         ('reserved', 'reserved.com'),
+        ('prom', 'prom.ua'),
+        ('kasta', 'kasta.ua'),
+        ('kolgot', 'kolgot.net'),
+        ('ager', 'ager.ua')
     ]
     site = forms.ChoiceField(
         choices=URL_CHOICES,
         widget=forms.Select(attrs={
             'class': 'form-select',
             'id': 'select_date',
-            'style': 'height: 50px; border-radius: 0;'
+            'style': 'height: 50px; border-radius: 0; width: 10%; background-color: transparent; border: none;'
         })
     )
 
@@ -70,8 +59,14 @@ class PricesForm(forms.Form):
             'id': 'autocomplete_basic',
             'aria-controls': 'autoComplete_list_1',
             'aria-autocomplete': 'both',
-            'style': 'height: 50px; border-radius: 0;',
-            'placeholder': '  Посилання на товар...'
+            'style': 'height: 50px; border-radius: 0;'
+                     'background-color: transparent; '
+                     'border: none; '
+                     'border-bottom: 1px solid white; '
+                     'color: white; '
+                     'box-sizing: border-box; '
+                     'outline: none; ',
+            'placeholder': 'Посилання...'
         })
     )
 
@@ -84,22 +79,27 @@ class CustomSignupForm(SignupForm):
         self.fields['username'].widget.attrs.update({
             'class': 'form-control',
             'placeholder': 'Username',
+            'style': 'background-color: transparent; border: none; border-bottom: 1px solid white; color: white; border-radius: 0;'
         })
         self.fields['email'].widget.attrs.update({
             'class': 'form-control',
             'placeholder': 'example@example.com',
+            'style': 'background-color: transparent; border: none; border-bottom: 1px solid white; color: white; border-radius: 0;'
         })
         self.fields['password1'].widget.attrs.update({
             'class': 'form-control',
             'placeholder': '••••••••',
+            'style': 'background-color: transparent; border: none; border-bottom: 1px solid white; color: white; border-radius: 0;'
         })
         self.fields['password2'].widget.attrs.update({
             'class': 'form-control',
             'placeholder': '••••••••',
+            'style': 'background-color: transparent; border: none; border-bottom: 1px solid white; color: white; border-radius: 0;'
         })
         self.fields['telegram'].widget.attrs.update({
             'class': 'form-control',
             'placeholder': 'Telegram',
+            'style': 'background-color: transparent; border: none; border-bottom: 1px solid white; color: white; border-radius: 0;'
         })
 
     def save(self, request):
@@ -121,16 +121,18 @@ class CustomLoginForm(LoginForm):
         self.fields['login'].label = 'Email'
         self.fields['login'].widget = forms.EmailInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Email'
+            'placeholder': 'Пошта',
+            'style': 'background-color: transparent; border: none; border-bottom: 1px solid white; color: white; border-radius: 0;'
         })
         self.fields['password'].widget.attrs.update({
             'class': 'form-control',
-            'placeholder': '••••••••••'
+            'placeholder': '••••••••••',
+            'style': 'background-color: transparent; border: none; border-bottom: 1px solid white; color: white; border-radius: 0;'
         })
 
 class UserPricesForm(forms.Form):
     URL_CHOICES = [
-        ('', 'магазин'),
+        ('', ''),
         ('allo', 'allo.com'),
         ('comfy', 'comfy.ua'),
         ('epicentr', 'epicentr.ua'),
@@ -141,26 +143,25 @@ class UserPricesForm(forms.Form):
         ('f', 'f.ua'),
         ('moyo', 'moyo.ua'),
         ('citrus', 'ctrs.com.ua'),
-        ('eva', 'eva.ua'),
         ('intertop', 'intertop.ua'),
         ('stylus', 'stylus.ua'),
         ('yakaboo', 'yakaboo.ua'),
         ('deka', 'deka.ua'),
-        ('bookye', 'book-ye.com.ua'),
-        ('zara', 'zara.com'),
         ('eldorado', 'eldorado.ua'),
-        ('telemart', 'telemart.ua'),
         ('osport', 'osport.ua'),
         ('bi', 'bi.ua'),
-        ('sinsay', 'sinsay.com'),
         ('reserved', 'reserved.com'),
+        ('prom', 'prom.ua'),
+        ('kasta', 'kasta.ua'),
+        ('kolgot', 'kolgot.net'),
+        ('ager', 'ager.ua')
     ]
     site = forms.ChoiceField(
         choices=URL_CHOICES,
         widget=forms.Select(attrs={
             'class': 'form-select',
             'id': 'select_date',
-            'style': 'height: 50px; border-radius: 0;'
+            'style': 'height: 50px; border-radius: 0; width: 10%; background-color: transparent; border: none; '
         })
     )
 
@@ -171,8 +172,63 @@ class UserPricesForm(forms.Form):
             'id': 'autocomplete_basic',
             'aria-controls': 'autoComplete_list_1',
             'aria-autocomplete': 'both',
-            'style': 'height: 50px; border-radius: 0;',
-            'placeholder': '  Посилання на товар...'
+            'style': 'height: 50px; border-radius: 0;'
+                     'background-color: transparent; '
+                     'border: none; '
+                     'border-bottom: 1px solid white; '
+                     'color: white; '
+                     'box-sizing: border-box; '
+                     'outline: none; ',
+            'placeholder': '  Посилання...'
+        })
+    )
+
+class EditForm(forms.Form):
+    username = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'style': (
+                'border-radius: 0; height: 50px; '
+                'background-color: transparent; '
+                'border: none; '
+                'border-bottom: 1px solid white; '
+                'color: white; '
+                'box-sizing: border-box; '
+                'outline: none; '
+            ),
+            'class': 'form-control',
+            'placeholder': "  Ім'я..."
+        })
+    )
+    telegram = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'style': (
+                'border-radius: 0; height: 50px; '
+                'background-color: transparent; '
+                'border: none; '
+                'border-bottom: 1px solid white; '
+                'color: white; '
+                'box-sizing: border-box; '
+                'outline: none; '
+            ),
+            'class': 'form-control',
+            'placeholder': '  Телеграм (username)...'
+        })
+    )
+    mail = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'style': (
+                'border-radius: 0; height: 50px; '
+                'background-color: transparent; '
+                'border: none; '
+                'border-bottom: 1px solid white; '
+                'color: white; '
+                'box-sizing: border-box; '
+                'outline: none; '
+            ),
+            'class': 'form-control',
+            'placeholder': 'Пошта...'
         })
     )
 

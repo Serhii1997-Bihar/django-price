@@ -32,16 +32,16 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if not username:
-        await update.message.reply_text("❌ Your username not founded in Telegram!")
+        await update.message.reply_text("❌ Тебе не знайдено в телеграмі, зареєструй свій username!")
         return
 
     person = await get_registered_person(username)
 
     if person:
         await update_chat_id(person, chat_id)
-        await update.message.reply_text(f"✅ Hello, @{person.telegram}! We updated you chat_id.")
+        await update.message.reply_text(f"✅ Вітаю, @{person.telegram}! Ти передав свій chat_id.")
     else:
-        await update.message.reply_text("❌ You must be registered in site!")
+        await update.message.reply_text("❌ Ти повинен зареєструвати свій username на сайті!")
 
 if __name__ == "__main__":
     application = Application.builder().token(pricesua_project.settings.TELEGRAM_BOT_TOKEN).build()

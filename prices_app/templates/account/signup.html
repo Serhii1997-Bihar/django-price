@@ -4,7 +4,7 @@
     <div class="container mt-3 d-flex justify-content-center" style="border-radius: 0 !important;">
         <form class="login-form" method="POST" action="{% url 'account_signup' %}">
             {% csrf_token %}
-            <div class="card mb-0" style="border-radius: 0 !important;">
+            <div class="glass-card mb-0 py-2 px-5" style="border-radius: 0 !important;">
                 <div class="card-body">
                     <div class="text-center mb-3">
                         <div class="d-inline-flex align-items-center justify-content-center mb-0 mt-2">
@@ -17,7 +17,6 @@
 
                     {% for field in form %}
                         <div class="mb-3">
-                            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                             <div class="form-control-feedback form-control-feedback-start">
                                 {{ field }}
                                 <div class="form-control-feedback-icon">
@@ -37,19 +36,14 @@
                     {% endfor %}
 
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-teal w-100">Реєстрація</button>
+                        <button type="submit" class="btn btn-info w-100" style="border-radius: 0;">Реєстрація</button>
                     </div>
 
-                    <span class="form-text text-center text-muted">
-                        By continuing, you're confirming that you've read our
-                        <a href="#">Terms &amp; Conditions</a> and <a href="#">Cookie Policy</a>.
-                    </span>
+                    <div class="mb-3">
+                        <a href="{% url 'account_login' %}" class="btn btn-info w-100" style="border-radius: 0;">Увійти</a>
+                    </div>
                 </div>
             </div>
-            <p class="mt-3 text-center">
-            Вже маєте акаунт?
-            <a href="{% url 'account_login' %}">Увійти</a>
-        </p>
         </form>
     </div>
 {% endblock %}

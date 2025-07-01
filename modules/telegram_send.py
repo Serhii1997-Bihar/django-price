@@ -5,7 +5,11 @@ def send_message(chat_id, message):
     try:
         token = settings.TELEGRAM_BOT_TOKEN
         url = f"https://api.telegram.org/bot{token}/sendMessage"
-        data = {'chat_id': chat_id, 'text': message}
+        data = {
+            'chat_id': chat_id,
+            'text': message,
+            'disable_web_page_preview': True
+        }
         response = requests.post(url, data=data)
         response.raise_for_status()
         result = response.json()
@@ -15,6 +19,7 @@ def send_message(chat_id, message):
                 print(f"Chat_id: {chat_id} has blocked or deleted the bot.")
     except requests.RequestException as e:
         print(f"Telegram error: {e}")
+
 
 
 

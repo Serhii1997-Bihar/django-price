@@ -2,106 +2,65 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <main class="d-flex align-items-center justify-content-center" style="flex: 1;">
-        <form method="post" id="main_form" class="w-100" style="max-width: 80%;">
-            {% csrf_token %}
+<div>
+    <form method="post" id="main_form" class="main-form w-100 mt-4">
+        {% csrf_token %}
+        {{ form.site }}
+        {{ form.link }}
+        {{ form.mail }}
+        <button type="submit" class="btn btn-info">Запит</button>
+    </form>
 
-            <div class="d-flex justify-content-center align-items-center text-center gap-3 w-100"
-                 style="flex-wrap: nowrap;">
+    {% if error %}
+        <div class="alert glass-card text-center mt-3">{{ error }}</div>
+    {% endif %}
 
-                <div style="width: 16%;">
-                    {{ form.site }}
-                </div>
 
-                <div style="width: 74%;">
-                    {{ form.link }}
-                </div>
-
-                <div style="width: 10%; height: 50px;">
-                    <button type="submit" class="btn btn-primary h-100 rounded-0">Отримати<i class="ph-paper-plane-tilt ms-2"></i>
-                    </button>
-                </div>
-
-            </div>
-
-            <div class="d-flex justify-content-center align-items-start gap-4 mt-2 flex-wrap">
-                <p class="mb-0">{{ form.name }}</p>
-                <p class="mb-0">{{ form.telegram }}</p>
-                <p class="mb-0">{{ form.mail }}</p>
-            </div>
-        </form>
-    </main>
-</div>
-
-<div class="container">
-    <div class="card d-flex justify-content-center mt-3" style="border-radius: 0 !important;">
+    <div class="glass-card w-100 mt-4" style="border-radius: 0;">
         <div class="table-responsive">
-            <table class="table text-nowrap">
-            <thead>
-                <tr>
-                    <th>Сайт</th>
-                    <th>Товар</th>
-                    <th>Ціна</th>
-                    <th>Стара ціна</th>
-                    <th>Знижка</th>
-                    <th>Історія</th>
-                </tr>
-        </thead>
-            <tbody>
-                {% for el in product_data %}
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <a href="#" class="d-block me-3">
-                                {% if el.product.icon %}
-                                    <img src="{{ el.product.icon.url }}" class="rounded-circle" width="36" height="36" alt="">
+            <table class="table text-white mb-0">
+                <tbody>
+                    {% for el in product_data %}
+                    <tr>
+                        <td class="text-center">
+                            {% if el.product.icon %}
+                                <img src="{{ el.product.icon.url }}" class="rounded-circle" width="36" height="36" alt="">
+                            {% else %}
+                                <span>-</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{{ el.product.link }}" style="color: white; display: block; word-wrap: break-word; text-decoration: none; text-align: center;">
+                                {{ el.product.product_name|slice:":70" }}
+                            </a>
+                        </td>
+
+                        <td>
+                            <a style="color: white; display: block; word-wrap: break-word; text-decoration: none; text-align: center;">
+                                {% if el.price %}
+                                    ₴{{ el.price }}
                                 {% else %}
-                                    <span>None</span>
+                                    —
                                 {% endif %}
                             </a>
-                        </div>
-                    </td>
-
-                    <td style="vertical-align: middle;">
-                        <span class="text-muted">
-                            <a href="{{ el.product.link }}" style="color: gray; display: block; word-wrap: break-word; white-space: normal;">
-                                {{ el.product.product_name }}
-                            </a>
-                        </span>
-                    </td>
+                        </td>
 
 
-
-                    {% if el.price %}
-                    <td><p class="mb-0">₴{{ el.price }}</p></td>
-                    {% else %}
-                    <td><p class="mb-0">—</p></td>
-                    {% endif %}
-
-                    {% if el.old_price %}
-                    <td><p class="mb-0" style="color: red; text-decoration: line-through;">₴{{ el.old_price }}</p></td>
-                    {% else %}
-                    <td><p class="mb-0">—</p></td>
-                    {% endif %}
-
-                    {% if el.discount %}
-                    <td><span class="text-danger"><i class="ph-trend-down me-2"></i>{{ el.discount }}%</span></td>
-                    {% else %}
-                    <td><span class="text-danger">—</span></td>
-                    {% endif %}
-
-                    <td><a href="{% url 'product_history' el.product.id %}" class="badge bg-primary bg-opacity-10 text-primary">Історія</a></td>
-
-
+                        <td class="text-center">
+                            <a href="{% url 'product_info' el.product.id %}" class="badge bg-info text-white" style="text-decoration: none">Деталі</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="text-center">
-        <a href="{% url 'history' %}">Всі товари</a>
+
+    <div class="text-center mt-5">
+        <a href="{% url 'history' %}" class="glass-card p-3" style="text-decoration: none; color: white; border-radius: 0;">Всі товари</a>
     </div>
-</div>
+
+
+
 {% endblock %}

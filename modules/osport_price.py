@@ -51,13 +51,18 @@ cookies = {
 
 
 def osport_price(url):
-    options = Options()
+    options = uc.ChromeOptions()
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = "/usr/bin/chromium-browser" #snap
-    driver = uc.Chrome(options=options, driver_executable_path="/usr/bin/chromium-browser")
-    # driver_executable_path="/usr/bin/chromedriver"
+
+    driver_path = ChromeDriverManager().install()
+
+    driver = uc.Chrome(
+        options=options,
+        headless=True,
+        driver_executable_path=driver_path
+    )
 
     response = requests.get(url, headers=headers, cookies=cookies)
     if response.status_code == 200:
@@ -107,7 +112,9 @@ def osport_price(url):
                 image = image_response.content
         except AttributeError:
             image = None
-        print(product_name, price, old_price, discount, image_url)
+
+
+        print(product_name, price, old_price, discount)
         return product_name, price, old_price, discount, icon, image
 
 if __name__ == "__main__":

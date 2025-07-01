@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+
+  migrate:
+    build: .
+    command: python manage.py migrate
+    depends_on:
+      - db
+
+  web:
+    build: .
+    restart: always
+    ports:
+      - "8001:8001"
+    volumes:
+      - .:/app
+    command: python manage.py runserver 0.0.0.0:8001
+    depends_on:
+      - db
+
+  bot:
+    build: .
+    restart: always
+    volumes:
+      - .:/app
+    command: python modules/bot.py
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: working_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Hardwell1997
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

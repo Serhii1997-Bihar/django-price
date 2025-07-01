@@ -1,0 +1,105 @@
+{% extends "prices_templates/base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+    <div class="description responsive-layout text-left mt-3 p-3 w-100 mt-4"
+         style="background-color: rgba(0, 0, 0, 0.1)!important; backdrop-filter: blur(40px)!important;">
+        {% if product.image.url %}
+        <img src="{{ product.image.url }}" height="200" style="padding: 1%; object-fit: contain;">
+        {% else %}
+        <img alt="Image not founded" width="150" height="150" style="border: black solid thin; padding: 1%;">
+        {% endif %}
+        <div class="d-grid gap-1">
+            <h1 class="page-title mb-2 "><a href="{{ product.link }}" style="color: white; text-decoration: none;">{{ product.product_name }}</a></h1>
+
+            <div class="d-flex align-items-center mb-1">
+                <div class="fw-semibold" style="width: 150px;">Ціна:</div>
+                {% if price.price %}
+                <div>₴{{ price.price }}</div>
+                {% else %}
+                <div>—</div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex align-items-center mb-1">
+                <div class="fw-semibold" style="width: 150px;">Стара ціна:</div>
+                {% if price.old_price %}
+                <div style="color: red; text-decoration: line-through;">₴{{ price.old_price }}</div>
+                {% else %}
+                <div>—</div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex align-items-center mb-1">
+                <div class="fw-semibold" style="width: 150px;">Знижка:</div>
+                {% if price.discount %}
+                <div><span class="text-success"><i class="ph-trend-down me-2"></i>{{ price.discount }}%</span></div>
+                {% else %}
+                <div>—</div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex align-items-center mb-1">
+                <div class="fw-semibold" style="width: 150px;">Сайт:</div>
+                <div class="d-flex align-items-center">
+                    <a href="#" class="d-block me-3">
+                        {% if product.icon %}
+                            <img src="{{ product.icon.url }}" width="36" height="36" alt="">
+                        {% else %}
+                            <span>—</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="glass-card w-100 mt-2" style="border-radius: 0;">
+        <div class="table-responsive">
+            <table class="table text-white text-center mb-0">
+            <tbody>
+                {% for el in prices %}
+                <tr>
+                    <td>
+                        <a style="color: white; text-decoration: none;">
+                            {{ el.date|date:"m.d.Y h:m" }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if el.price %}
+                        <a style="color: white; text-decoration: none;">
+                            ₴{{ el.price }}
+                        </a>
+                        {% else %}
+                        <a style="color: white; text-decoration: none;">
+                            -
+                        </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if el.old_price %}
+                        <a style="color: red; text-decoration: line-through;">
+                            ₴{{ el.old_price }}
+                        </a>
+                        {% else %}
+                        <a style="color: white;">—</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if el.discount %}
+                            <span class="text-success"><i class="ph-trend-down me-2"></i>{{ el.discount }}%</span>
+                        {% else %}
+                            <a style="color: white;">—</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}

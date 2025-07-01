@@ -1,0 +1,17 @@
+{% extends "prices_templates/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex justify-content-center mt-5">
+    <div class="w-100 glass-card px-4 py-4" style="max-width: 400px; border-radius: 0; ">
+        <form method="post" class="d-grid">
+            {% csrf_token %}
+            {{ form.username }}
+            {{ form.telegram }}
+            {{ form.mail }}
+            <button type="submit" class="btn btn-primary mt-5" style="height: 50px; border-radius: 0;">Змінити</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

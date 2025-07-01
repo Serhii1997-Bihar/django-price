@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PersonModel, ProductModel, PriceModel, ProductRoz
+from .models import PersonModel, ProductModel, PriceModel
 
 @admin.register(PersonModel)
 class PersonAdmin(admin.ModelAdmin):
@@ -38,22 +38,9 @@ class PriceAdmin(admin.ModelAdmin):
         return obj.person.user.username if obj.person else "-"
     get_person_username.short_description = "Added By"
 
-from .models import DepartmentRozetkaModels
-
-@admin.register(DepartmentRozetkaModels)
-class DepartmentRozetkaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'icon')
-
-@admin.register(ProductRoz)
-class ProductRozAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'discount', 'status', 'department', 'category')
-    search_fields = ('name', 'department', 'category')
-    list_filter = ('status', 'department', 'category')
 
 
 
 
 
-
-#Serhii_B, Serhii_B 127.0.0.0
-#Serhii_B, serhii_b 126.64.25.15
+#admin2025 passwordadmin

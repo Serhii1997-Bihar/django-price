@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 class PersonModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='person')
-    telegram = models.CharField(max_length=20, verbose_name="Telegram Username", unique=True)
+    telegram = models.CharField(max_length=20, verbose_name="Telegram Username", unique=True, blank=True, null=True)
     chat_id = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telegram Chat ID")
 
     class Meta:
@@ -44,35 +44,3 @@ class PriceModel(models.Model):
         return f"{self.price} on {self.date.date()}"
 
 
-class DepartmentRozetkaModels(models.Model):
-    name = models.CharField(max_length=250)
-    icon = models.ImageField(upload_to="images/", null=True, blank=True)
-
-    class Meta:
-        managed = False  # Django не буде створювати/видаляти цю таблицю
-        db_table = 'rozetka_app_departmentrozetkamodels'  # Точна назва в базі
-
-    def __str__(self):
-        return self.name
-
-class ProductRoz(models.Model):
-    department_foreign_key = models.ForeignKey(DepartmentRozetkaModels, on_delete=models.SET_NULL, null=True,
-                                               blank=True, related_name='products')
-    department = models.CharField(max_length=250, null=True, blank=True)
-    category = models.CharField(max_length=250, null=True, blank=True)
-    name = models.CharField(max_length=500)
-    price = models.CharField(max_length=50, null=True, blank=True)
-    price_old = models.CharField(max_length=50, null=True, blank=True)
-    discount = models.PositiveIntegerField(null=True, blank=True)
-    bonus = models.CharField(max_length=250, default=None, null=True, blank=True)
-    status = models.CharField(max_length=25, default='New')
-    image = models.ImageField(upload_to="images/", null=True, blank=True)
-
-    link = models.CharField(max_length=250, unique=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        managed = False
-        db_table = 'rozetka_app_productroz'

@@ -101,6 +101,7 @@ def deka_price(url):
         except AttributeError:
             image = None
 
+        print(product_name, price, old_price, discount)
         return product_name, price, old_price, discount, icon, image
 
 if __name__ == "__main__":

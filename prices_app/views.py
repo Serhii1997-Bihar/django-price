@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.files.base import ContentFile
 import pricesua_project.settings
-from prices_app.forms import PricesForm, UserPricesForm
-from prices_app.models import ProductModel, PersonModel, PriceModel, DepartmentRozetkaModels, ProductRoz
+from prices_app.forms import PricesForm, UserPricesForm, EditForm
+from prices_app.models import ProductModel, PersonModel, PriceModel
 from modules.telegram_send import send_message
 from modules.site_functions import site_functions
 from django.core.mail import send_mail
@@ -19,8 +19,7 @@ from django.db.models import Q
 
 def get_prices(request):
     user = request.user
-
-    product_data = PriceModel.objects.select_related('product').order_by('-date')[:5]
+    product_data = PriceModel.objects.select_related('product').order_by('-date')[:6]
 
     if request.method == 'POST':
         form = PricesForm(request.POST)
@@ -28,57 +27,77 @@ def get_prices(request):
         if form.is_valid():
             cd = form.cleaned_data
             site_name = cd['site']
-
             price_function = site_functions.get(site_name)
 
-            if request.user.is_authenticated:
-                user = request.user
-                person = user.person if hasattr(user,
-                                                'person') else None
-            else:
-                user, created_user = User.objects.get_or_create(
-                    username=cd['name'],
-                    defaults={
-                        'email': cd['mail'],
-                        'password': get_random_string(10)})
+            if not request.user.is_authenticated:
 
-                if created_user:
+                user = User.objects.filter(email=cd['mail']).first()
+
+                if not user:
+
+                    base_username = cd['mail'].split('@')[0]
+                    username = base_username
+                    counter = 1
+                    while User.objects.filter(username=username).exists():
+                        username = f"{base_username}{counter}"
+                        counter += 1
+
                     password = get_random_string(12)
-                    user.set_password(password)
-                    user.save()
-                    user.backend = 'django.contrib.auth.backends.ModelBackend'
-                    login(request, user)
+                    user = User.objects.create_user(
+                        username=username,
+                        email=cd['mail'],
+                        password=password)
 
+                    user = authenticate(username=username, password=password)
+                    if user is not None:
+                        login(request, user)
+
+                    send_mail(
+                        subject="Дякуємо за реєстрацію!",
+                        message=(
+                            f"Ваші реєстраційні дані:\n"
+                            f"Електронна пошта: {cd['mail']}\n"
+                            f"Пароль: {password}\n\n"
+                            f"Щоб отримувати сповіщення в Telegram — відкрийте @priser_2025_bot та натисніть 'Start'."),
+                        from_email=pricesua_project.settings.EMAIL_HOST_USER,
+                        recipient_list=[cd['mail']],
+                        fail_silently=False)
+
+                else:
+
+                    return render(request, 'prices_templates/main.html', {
+                        'form': form,
+                        'product_data': product_data,
+                        'user': request.user,
+                        'error': 'Користувач з такою поштою вже існує. Увійдіть у свій акаунт.'})
+
+                telegram_value = cd.get('telegram', '')
                 person, _ = PersonModel.objects.get_or_create(
                     user=user,
-                    defaults={'telegram': cd['telegram']})
-
-                send_mail(
-                    subject=f"Дякуємо за реєстрацію!",
-                    message=(
-                        f"Ваші реєстраційні дані:\n"
-                        f"Електронна пошта: {cd['mail']}\n"
-                        f"Пароль: {password}\n\n"
-                        f"Надалі оновлення по вашому товару автоматично надходитимуть на вашу електронну пошту.\n"
-                        f"Щоб також отримувати сповіщення в Telegram — перейдіть у діалог з ботом і натисніть 'Start' у @priser_2025_bot."
-                    ),
-                    from_email=pricesua_project.settings.EMAIL_HOST_USER,
-                    recipient_list=[cd['mail']],
-                    fail_silently=False)
+                    defaults={'telegram': telegram_value}
+                )
+            else:
+                user = request.user
+                person = getattr(user, 'person', None)
 
             if price_function:
                 product_name, price, old_price, discount, icon, image = price_function(cd['link'])
 
-                message = f"Товар: {product_name}\nЦіна: {price} UAN"
+                old_price_str = f"{old_price} UAH" if old_price else "-"
+                discount_str = f"{discount}%" if discount else "-"
 
-                chat_id = person.chat_id
-                if chat_id:
-                    send_message(chat_id, message)
-                else:
-                    print("Відсутній ID чату.")
+                message = (
+                    f"🔗 {cd['link']}\n"
+                    f"{'-' * 66}\n"
+                    f"📦 {product_name}\n"
+                    f"💰 Ціна: {price} UAH\n"
+                    f"🔻 Попередня: {old_price_str}\n"
+                    f"🎯 Знижка: {discount_str}\n"
+                    f"{'-' * 66}\n"
+                )
 
                 send_mail(
-                    subject=f"Ціна для {product_name}",
+                    subject="Discount information",
                     message=message,
                     from_email=pricesua_project.settings.EMAIL_HOST_USER,
                     recipient_list=[cd['mail']],
@@ -90,7 +109,6 @@ def get_prices(request):
                         'image': ContentFile(image, name='image.png') if image else None,
                         'icon': ContentFile(icon, name='favicon.png') if icon else None,
                         'product_name': product_name})
-
                 product.users.add(user)
 
                 PriceModel.objects.create(
@@ -101,20 +119,22 @@ def get_prices(request):
                     product=product)
 
             return redirect('success')
-
-
     else:
         form = PricesForm()
 
-    context = {'form': form, 'product_data': product_data, 'user': user}
+    context = {
+        'form': form,
+        'product_data': product_data,
+        'user': user
+    }
     return render(request, 'prices_templates/main.html', context)
 
-def product_history(request, id):
+def product_info(request, id):
     product = ProductModel.objects.get(id=id)
     prices = PriceModel.objects.filter(product=product).order_by('-date')
     price = prices.first()
     context = {'product': product, 'prices': prices, 'price': price}
-    return render(request, 'prices_templates/product_history.html', context)
+    return render(request, 'prices_templates/product_info.html', context)
 
 def history(request):
     products = ProductModel.objects.all()
@@ -150,7 +170,18 @@ def username_products(request, username):
             if price_function:
                 product_name, price, old_price, discount, icon, image = price_function(cd['link'])
 
-                message = f"Товар: {product_name}\nЦіна: {price} UAN"
+                old_price_str = f"{old_price} UAH" if old_price else "-"
+                discount_str = f"{discount}%" if discount else "-"
+
+                message = (
+                    f"🔗 {cd['link']}\n"
+                    f"{'-' * 66}\n"
+                    f"📦 {product_name}\n"
+                    f"💰 Ціна: {price} UAH\n"
+                    f"🔻 Попередня: {old_price_str}\n"
+                    f"🎯 Знижка: {discount_str}\n"
+                    f"{'-' * 66}\n"
+                )
 
                 chat_id = person.chat_id
                 if chat_id:
@@ -159,7 +190,7 @@ def username_products(request, username):
                     print("Відсутній ID чату.")
 
                 send_mail(
-                    subject=f"Ціна для {product_name}",
+                    subject=f"Discount information",
                     message=message,
                     from_email=pricesua_project.settings.EMAIL_HOST_USER,
                     recipient_list=[user.email],
@@ -194,57 +225,42 @@ def username_products(request, username):
     return render(request, 'account/username_products.html', context)
 
 @login_required()
+def username_info(request, username):
+    user = get_object_or_404(User, username=username)
+    person = get_object_or_404(PersonModel, user=user)
+
+    if request.method == 'POST':
+        form = EditForm(request.POST)
+
+        if form.is_valid():
+            cd = form.cleaned_data
+            username = cd['username']
+            telegram = cd['telegram']
+            mail = cd['mail']
+
+            user.username = username
+            person.telegram = telegram
+            user.email = mail
+
+            user.save()
+            person.save()
+
+            return redirect('prices')
+    else:
+        form = EditForm(initial={
+            'username': user.username,
+            'mail': user.email,
+            'telegram': person.telegram
+        })
+
+    context = {'user': user, 'form': form}
+    return render(request, 'account/username_info.html', context)
+
+@login_required()
 def success(request):
     user = request.user
     context = {'user': user}
     return render(request, 'account/success.html', context)
-
-def get_rozetka(request):
-    departments = DepartmentRozetkaModels.objects.all().order_by('id')
-    return render(request, 'prices_templates/rozetka.html', {'departments': departments})
-
-def get_rozetka_category(request, name):
-    department = get_object_or_404(DepartmentRozetkaModels, name=name)
-    products_qs = ProductRoz.objects.filter(department_foreign_key=department).order_by('id')
-
-    query = request.GET.get('q')
-    if query:
-        products_qs = products_qs.filter(
-            Q(name__icontains=query))
-
-    paginator = Paginator(products_qs, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'prices_templates/rozetka_category.html', {
-        'products': page_obj.object_list,
-        'page_obj': page_obj,
-        'category_name': department.name,
-        'category_icon': department.icon.url if department.icon else None,
-        'query': query,
-    })
-
-def get_discounts(request):
-    discount_filter = request.GET.get('discount_range')
-
-    if discount_filter == 'lt25':
-        products = ProductRoz.objects.filter(discount__isnull=False, discount__lt=25)
-    elif discount_filter == '25to50':
-        products = ProductRoz.objects.filter(discount__isnull=False, discount__gte=25, discount__lte=50)
-    elif discount_filter == 'gt50':
-        products = ProductRoz.objects.filter(discount__isnull=False, discount__gt=50)
-    else:
-        products = ProductRoz.objects.all()
-
-    paginator = Paginator(products.order_by('-discount'), 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'prices_templates/discounts_products.html', {
-        'products': page_obj.object_list,
-        'page_obj': page_obj,
-        'discount_filter': discount_filter,
-    })
 
 
 

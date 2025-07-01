@@ -1,10 +1,16 @@
 import os
 import sys
-import django
-from urllib.parse import urlparse
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pricesua_project.settings")
+
+import django
 django.setup()
+
+from django.core.mail import send_mail
+from prices_app.models import PersonModel
+from django.shortcuts import get_object_or_404
+import pricesua_project.settings
+from modules.telegram_send import send_message
 
 from prices_app.models import ProductModel, PriceModel
 from modules.allo_price import allo_price
@@ -12,7 +18,6 @@ from modules.comfy_price import comfy_price
 from modules.epicentr_price import epicentr_price
 from modules.foxtrot_price import foxtrot_price
 from modules.makeup_price import makeup_price
-from modules.eva_price import eva_price
 from modules.stylus_price import stylus_price
 from modules.rozetka_price import rozetka_price
 from modules.eldorado_price import eldorado_price
@@ -20,16 +25,16 @@ from modules.intertop_price import intertop_price
 from modules.citrus_price import citrus_price
 from modules.yakaboo_price import yakaboo_price
 from modules.reserved_price import reserved_price
-from modules.sinsay_price import sinsay_price
 from modules.bi_price import bi_price
 from modules.moyo_price import moyo_price
-from modules.telemart_price import telemart_price
 from modules.fua_price import fua_price
-from modules.zara_price import zara_price
-from modules.bookye_price import bookye_price
 from modules.osport_price import osport_price
 from modules.deka_price import deka_price
 from modules.brain_price import brain_price
+from modules.prom_price import prom_price
+from modules.kasta_price import kasta_price
+from modules.kolgot_price import kolgot_price
+from modules.ager_price import ager_price
 from urllib.parse import urlparse
 
 SCRAPER_MAP = {
@@ -38,24 +43,23 @@ SCRAPER_MAP = {
     'ctrs.com.ua': citrus_price,
     'comfy.ua': comfy_price,
     'epicentrk.ua': epicentr_price,
-    'eva.ua': eva_price,
     'foxtrot.com.ua': foxtrot_price,
     'f.ua': fua_price,
     'intertop.ua': intertop_price,
     'makeup.com.ua': makeup_price,
     'moyo.ua': moyo_price,
     'rozetka.com.ua': rozetka_price,
-    'stylus.ua': stylus_price,
+    'stls.store': stylus_price,
     'yakaboo.ua': yakaboo_price,
-    'book-ye.com.ua': bookye_price,
-    'zara.com': zara_price,
     'eldorado.ua': eldorado_price,
-    'telemart.ua': telemart_price,
     'osport.ua': osport_price,
-    'sinsay.com': sinsay_price,
     'reserved.com': reserved_price,
     'deka.ua': deka_price,
-    'bi.ua': bi_price
+    'bi.ua': bi_price,
+    'prom.ua': prom_price,
+    'kasta.ua': kasta_price,
+    'kolgot.net': kolgot_price,
+    'ager.ua': ager_price
 }
 
 
@@ -86,17 +90,58 @@ def add_prices():
 
             product_name, price, old_price, discount, icon, image = result
 
+            last_price = PriceModel.objects.filter(product=product).order_by('-id').first()
+
+            from decimal import Decimal
+
+            price_decimal = Decimal(str(price))
+            last_price_decimal = last_price.price
+
+            if last_price and last_price_decimal == price_decimal:
+                print(f"Price for {product.product_name} без змін. Пропускаємо.")
+                print("=" * 120)
+                continue
+
             PriceModel.objects.create(
                 product=product,
                 price=price,
                 old_price=old_price,
-                discount=discount
-            )
+                discount=discount)
 
-            print(f"{product.product_name} added new price!")
+            for user in product.users.all():
+                person = get_object_or_404(PersonModel, user=user)
+
+                old_price_str = f"{old_price} UAH" if old_price else "-"
+                discount_str = f"{discount}%" if discount else "-"
+
+                message = (
+                    f"🔗 {product.link}\n"
+                    f"{'-' * 66}\n"
+                    f"📦 {product_name}\n"
+                    f"💰 Ціна: {price} UAH\n"
+                    f"🔻 Попередня: {old_price_str}\n"
+                    f"🎯 Знижка: {discount_str}\n"
+                    f"{'-' * 66}\n"
+                )
+
+                chat_id = person.chat_id
+                if chat_id:
+                    send_message(chat_id, message)
+                else:
+                    print(f"Відсутній ID чату для {user.username}.")
+
+                send_mail(
+                    subject="Discount information",
+                    message=message,
+                    from_email=pricesua_project.settings.EMAIL_HOST_USER,
+                    recipient_list=[user.email],
+                    fail_silently=False
+                )
+
+            print("-" * 120)
 
         except Exception as e:
-            print(f"Error with {product.link}: {e}")
+            print(f"Помилка {product.link}: {e}")
 
 
 if __name__ == "__main__":

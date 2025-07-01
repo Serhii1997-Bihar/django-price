@@ -2,22 +2,13 @@ import time, re, requests
 from bs4 import BeautifulSoup
 import os
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 icon_path = os.path.join(BASE_DIR, 'icons', 'rozetka.ico')
 
 def rozetka_price(url):
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/123.0.0.0 Safari/537.36"
-        )
-    }
-
+    headers={"User-Agent":"Mozilla/5.0"}
     response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-        print("Failed to fetch page")
-        return None, None, None, None, None, None
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -62,8 +53,8 @@ def rozetka_price(url):
         icon = None
 
     try:
-        image_tag = soup.find('img', attrs={'class': 'image'})
-        image_url = image_tag['src']
+        image_tag = soup.find('img', attrs={'class': 'object-contain'})
+        image_url = image_tag.get('src')
         if image_url:
             image_response = requests.get(image_url)
             image = image_response.content
@@ -77,4 +68,4 @@ def rozetka_price(url):
 
 
 if __name__ == "__main__":
-    rozetka_price('https://rozetka.com.ua/ua/xiaomi-1128136/p485792264/')
+    rozetka_price('https://rozetka.com.ua/ua/365448825/p365448825/')

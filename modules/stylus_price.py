@@ -4,36 +4,42 @@ from selenium.webdriver.chrome.options import Options
 import re, time, requests
 from bs4 import BeautifulSoup
 import os
+from webdriver_manager.chrome import ChromeDriverManager
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 icon_path = os.path.join(BASE_DIR, 'icons', 'stylus.png')
 
 def stylus_price(url):
-    options = Options()
-    options.add_argument("--headless")
+    options = uc.ChromeOptions()
+    options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = "/usr/bin/chromium-browser" #snap
-    driver = uc.Chrome(options=options, driver_executable_path="/usr/bin/chromium-browser")
-    # driver_executable_path="/usr/bin/chromedriver"
+
+    driver_path = ChromeDriverManager().install()
+
+    driver = uc.Chrome(
+        options=options,
+        headless=True,
+        driver_executable_path=driver_path
+    )
 
     driver.get(url)
-    time.sleep(2)
+    time.sleep(3)
 
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
 
     try:
-        product_name = soup.find('h1', attrs={'class': 'sc-dToawr bwsEDU'}).text.strip()
+        product_name = soup.find('h1', attrs={'class': 'sc-gkzUWO jXrKtw'}).text.strip()
 
         try:
-            price_tag = soup.find('div', attrs={'class': 'sc-hxYQKZ gAXxiE'}).text.strip()
+            price_tag = soup.find('div', attrs={'class': 'sc-jappHR fToiyu'}).text.strip()
             price = re.sub(r'[^0-9.]', '', price_tag)
         except AttributeError:
             price = None
 
         try:
-            old_tag = soup.find('div', {'class': 'sc-gsdrpe hriPqO'}).text.strip()
+            old_tag = soup.find('div', {'class': 'sc-jYyxEa iKKGPf'}).text.strip()
             old_price = re.sub(r'[^0-9.]', '', old_tag)
         except AttributeError:
             old_price = None
@@ -55,7 +61,7 @@ def stylus_price(url):
             icon = None
 
         try:
-            block = soup.find_all('img', attrs={'class': 'sc-iMqdDo eYhSak'})
+            block = soup.find_all('img', attrs={'class': 'sc-cYVtDV eYDNDM'})
             for el in block:
                 image_url = f"https://stylus.ua{el.get('src')}"
                 if image_url:
@@ -64,6 +70,7 @@ def stylus_price(url):
         except AttributeError:
             image = None
 
+        print(product_name, price, old_price, discount)
         return product_name, price, old_price, discount, icon, image
 
     finally:

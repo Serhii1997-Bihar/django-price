@@ -2,20 +2,26 @@ import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 import time, re, requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.chrome.options import Options
 import os
+from webdriver_manager.chrome import ChromeDriverManager
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 icon_path = os.path.join(BASE_DIR, 'icons', 'allo.png')
 
 def allo_price(url):
-    options = Options()
-    options.add_argument("--headless")
+    options = uc.ChromeOptions()
+    options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = "/usr/bin/chromium-browser" #snap
-    driver = uc.Chrome(options=options, driver_executable_path="/usr/bin/chromium-browser")
-    # driver_executable_path="/usr/bin/chromedriver"
+
+    driver_path = ChromeDriverManager().install()
+
+    driver = uc.Chrome(
+        options=options,
+        headless=True,
+        driver_executable_path=driver_path
+    )
+
     driver.get(url)
     time.sleep(3)
 
@@ -66,9 +72,10 @@ def allo_price(url):
     finally:
         driver.quit()
 
+    print(product_name, price, old_price, discount)
     return product_name, price, old_price, discount, icon, image
 
 
 if __name__ == "__main__":
-    print(allo_price('https://allo.ua/ua/televizory/televizor-xiaomi-tv-a-43-fhd-2025.html'))
+    allo_price('https://allo.ua/ua/televizory/televizor-xiaomi-tv-a-43-fhd-2025.html')
 

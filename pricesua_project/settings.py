@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_d_68vzk)3jg$cjaa)=9!qj7)#ewmk-q43#8(irn%$)!j#ccii
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.104']
 
 
 # Application definition
@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'working_db', #new_price_db
         'USER': 'postgres', #new_admin
         'PASSWORD': 'Hardwell1997', #price2025;
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
@@ -134,7 +134,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-TELEGRAM_BOT_TOKEN = '8087563978:AAFLxzCqbsHV_PaYWzWk5qe8TevytMY1EKc'
+TELEGRAM_BOT_TOKEN = '7863808284:AAGMOthcNLNE0_DwXEOJDM6paMjOHNSEpKE'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 

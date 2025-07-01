@@ -3,87 +3,46 @@
 
 {% block content %}
 
-<div class="container mt-5">
-    <main class="d-flex align-items-center justify-content-center" style="flex: 1;">
-        <form method="post" id="main_form" class="w-100" style="max-width: 80%;">
-                {% csrf_token %}
-
-                <div class="d-flex justify-content-center align-items-center text-center gap-3 w-100"
-                     style="flex-wrap: nowrap;">
-
-                    <div style="width: 16%;">
-                        {{ form.site }}
-                    </div>
-
-                    <div style="width: 74%;">
-                        {{ form.link }}
-                    </div>
-
-                    <div style="width: 10%; height: 50px;">
-                        <button type="submit" class="btn btn-primary h-100 rounded-0">Отримати<i class="ph-paper-plane-tilt ms-2"></i>
-                        </button>
-                    </div>
-
-                </div>
-            </form>
-    </main>
-    <div class="card d-flex justify-content-center mt-3" style="border-radius: 0 !important;">
+    <form method="post" id="main_form" class="main-form w-100 mt-4">
+        {% csrf_token %}
+        {{ form.site }}
+        {{ form.link }}
+        <button type="submit" class="btn btn-info">Запит</button>
+    </form>
+    <div class="glass-card w-100 mt-4" style="border-radius: 0;">
         <div class="table-responsive">
-            <table class="table text-nowrap">
-                <thead>
-                    <tr>
-                        <th>Сайт</th>
-                        <th>Товар</th>
-                        <th>Ціна</th>
-                        <th>Стара ціна</th>
-                        <th>Знижка</th>
-                        <th>Історія</th>
-                    </tr>
-                </thead>
+            <table class="table text-white text-center mb-0">
                 <tbody>
+                    {% if products %}
                     {% for el in products %}
                         <tr>
+                            <td class="text-center">
+                                <a href="#">
+                                    {% if el.icon %}
+                                        <img src="{{ el.icon.url }}" class="rounded-circle" width="36" height="36" alt="">
+                                    {% else %}
+                                        <span>-</span>
+                                    {% endif %}
+                                </a>
+                            </td>
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <a href="#" class="d-block me-3">
-                                        {% if el.icon %}
-                                            <img src="{{ el.icon.url }}" class="rounded-circle" width="36" height="36" alt="">
-                                        {% else %}
-                                            <span>None</span>
-                                        {% endif %}
-                                    </a>
-                                </div>
-                            </td>
-                            <td style="vertical-align: middle;">
-                                <span class="text-muted">
-                                    <a href="{{ el.link }}" style="color: gray; display: block; word-wrap: break-word; white-space: normal;">
-                                        {{ el.product_name }}
-                                    </a>
-                                </span>
+                                <a href="{{ el.link }}" style="color: white; display: block; word-wrap: break-word; text-decoration: none; text-align: center;">
+                                    {{ el.product_name|slice:":70" }}
+                                </a>
                             </td>
 
-                            <td><p class="mb-0">{% if el.price %}₴{{ el.price.price }}{% else %}—{% endif %}</p></td>
+                            <td><a style="color: white;">{% if el.price %}₴{{ el.price.price }}{% else %}—{% endif %}</a></td>
 
-                            <td><p class="mb-0" style="color: red; text-decoration: line-through;">
-                                {% if el.price and el.price.old_price %}₴{{ el.price.old_price }}{% else %}—{% endif %}
-                            </p></td>
-
-                            <td>
-                                {% if el.price and el.price.discount %}
-                                    <span class="text-danger"><i class="ph-trend-down me-2"></i>{{ el.price.discount }}%</span>
-                                {% else %}
-                                    <span class="text-danger">—</span>
-                                {% endif %}
-                            </td>
-
-                            <td><a href="{% url 'product_history' el.id %}" class="badge bg-primary bg-opacity-10 text-primary">History</a></td>
+                            <td><a href="{% url 'product_info' el.id %}" class="badge bg-info text-white" style="text-decoration: none">Деталі</a></td>
                         </tr>
                         {% endfor %}
+                    {% else %}
+
+                    {% endif %}
                 </tbody>
             </table>
         </div>
     </div>
 
-</div>
 
 {% endblock %}

@@ -3,68 +3,44 @@
 
 {% block content %}
 
-<div class="container w-100">
-    <div class="card d-flex justify-content-center mt-3" style="border-radius: 0 !important;">
+    <div class="glass-card w-100 mt-4" style="border-radius: 0;">
         <div class="table-responsive">
-            <table class="table text-nowrap">
-                <thead>
-                    <tr>
-                        <th>Сайт</th>
-                        <th>Товар</th>
-                        <th>Ціна</th>
-                        <th>Стара ціна</th>
-                        <th>Знижка</th>
-                        <th>Історія</th>
-                    </tr>
-                </thead>
+            <table class="table text-white mb-0">
                 <tbody>
                     {% for el in product_data %}
                     <tr>
+                        <td class="text-center">
+                            {% if el.product.icon %}
+                                <img src="{{ el.product.icon.url }}" class="rounded-circle" width="36" height="36" alt="">
+                            {% else %}
+                                <span>None</span>
+                            {% endif %}
+                        </td>
+
                         <td>
-                            <div class="d-flex align-items-center">
-                                <a href="#" class="d-block me-3">
-                                    {% if el.product.icon %}
-                                        <img src="{{ el.product.icon.url }}" class="rounded-circle" width="36" height="36" alt="">
-                                    {% else %}
-                                        <span class="mb-0">—</span>
-                                    {% endif %}
-                                </a>
-                            </div>
-                        </td>
-                        <td style="vertical-align: middle;">
-                            <span class="text-muted">
-                                <a href="{{ el.product.link }}" style="color: gray; display: block; word-wrap: break-word; white-space: normal;">
-                                    {{ el.product.product_name }}
-                                </a>
-                            </span>
+                            <a href="{{ el.product.link }}" style="color: white; display: block; word-wrap: break-word; text-decoration: none; text-align: center;">
+                                {{ el.product.product_name|slice:":70" }}
+                            </a>
                         </td>
 
-                        {% if el.price.price %}
-                        <td><p class="mb-0">₴{{ el.price.price }}</p></td>
-                        {% else %}
-                        <td><span class="mb-0">—</span></td>
-                        {% endif %}
+                        <td>
+                            <a style="color: white; display: block; word-wrap: break-word; text-decoration: none; text-align: center;">
+                                {% if el.price %}
+                                    ₴{{ el.price.price }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </a>
+                        </td>
 
-                        {% if el.price.old_price %}
-                        <td><p class="mb-0" style="color: red; text-decoration: line-through;">₴{{ el.price.old_price }}</p></td>
-                        {% else %}
-                        <td><p class="mb-0">—</p></td>
-                        {% endif %}
-
-                        {% if el.price.discount %}
-                        <td><span class="text-danger"><i class="ph-trend-down me-2"></i>{{ el.price.discount }}%</span></td>
-                        {% else %}
-                        <td><span class="text-danger">—</span></td>
-                        {% endif %}
-
-                        <td><a href="{% url 'product_history' id=el.product.id %}" class="badge bg-primary bg-opacity-10 text-primary">History</a></td>
+                        <td class="text-center">
+                            <a href="{% url 'product_info' el.product.id %}" class="badge bg-info text-white" style="text-decoration: none">Деталі</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
-</div>
 
 {% endblock %}

@@ -1,0 +1,151 @@
+body {
+    background: url('bac.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    color: white;
+    font-family: "Antic Didone"!important;}
+
+
+* {margin: 0; padding: 0;}
+
+#colorful-nav {
+    background-color: transparent;
+    padding-bottom: 0;
+    border: none;
+}
+
+#colorful-nav .navbar-nav {
+    height: 160px;
+}
+
+.colorful-nav-list .nav-item {
+    width: 14.28%;
+    transition: padding-top 0.2s ease;
+    background-color: rgba(0, 0, 0);
+    backdrop-filter: blur(8px);
+}
+
+.colorful-nav-list .nav-item:hover {
+    padding-top: 20px;
+}
+
+.colorful-nav-list .nav-link {
+    height: 100%;
+    background-color: black;
+    backdrop-filter: blur(8px);
+    color: white!important;
+    border: white solid thin;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.colorful-nav-list .nav-link:hover {
+    background-color: #40E0D0;
+    text-decoration: none;
+}
+
+#colorful-nav .glyphicon {
+    font-size: 30px;
+    margin-bottom: 5px;
+    color: white;
+}
+
+#colorful-nav h5 {
+    color: white;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .colorful-nav-list .nav-item {
+        width: 100%;
+        padding-top: 0 !important;
+    }
+
+    #colorful-nav .navbar-nav {
+        height: auto;
+    }
+}
+
+.responsive-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 20px;
+}
+
+
+
+
+@media (min-width: 768px) {
+    .responsive-layout {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        text-align: left;}
+
+
+}
+
+
+.glass-card {
+    background-color: rgba(255, 255, 255, 0.1); /* або rgba(0,0,0,0.1) */
+    backdrop-filter: blur(40px);
+    border-radius: none; border: none;
+}
+
+/* Прозорий фон у таблиці */
+table,
+thead,
+tbody,
+th,
+td,
+tr {
+    background-color: transparent !important;
+}
+
+
+td, th {
+    vertical-align: middle !important;
+}
+
+
+.main-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.main-form input {
+    height: 50px;
+    border-radius: 0;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid white;
+    color: white;
+    padding: 0 10px;
+    flex: 1 1 30%;
+    min-width: 200px;
+}
+
+.main-form button {
+    height: 50px;
+    border-radius: 0;
+    flex: 1 1 100px;
+}
+
+@media (min-width: 350px) and (max-width: 768px) {
+    .main-form {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .main-form input,
+    .main-form button {
+        width: 100%;
+    }
+}
+
+

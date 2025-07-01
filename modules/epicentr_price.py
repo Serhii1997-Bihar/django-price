@@ -61,15 +61,15 @@ def epicentr_price(url):
     response = requests.get(url, headers=headers, cookies=cookies)
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_name = soup.find('h1', attrs={'class':'_aql9TB _7TBdaN _GuJjCI'}).text.strip()
+        product_name = soup.find('h1').text.strip()
         try:
-            price_tag = soup.find('data', attrs={'itemprop':'price'}).text.strip()
+            price_tag = soup.find_all('data', attrs={'itemprop':'price'})[1].text.strip()
             price = re.sub(r'[^0-9.]', '', price_tag)
         except AttributeError:
             price = None
 
         try:
-            old_tag = soup.find('s', attrs={'class': '_Yf4yHx'}).text.strip()
+            old_tag = soup.find_all('data', attrs={'itemprop': 'price'})[0].text.strip()
             old_price = re.sub(r'[^0-9.]', '', old_tag)
         except AttributeError:
             old_price = None
@@ -91,7 +91,7 @@ def epicentr_price(url):
             icon = None
 
         try:
-            image_tag = soup.find('img', attrs={'class': '_oAFqao'})
+            image_tag = soup.find('img', attrs={'itemprop': 'image'})
             image_url = image_tag['data-zoom']
             if image_url:
                 image_response = requests.get(image_url)
@@ -99,7 +99,8 @@ def epicentr_price(url):
         except AttributeError:
             image = None
 
+        print(product_name, price, old_price, discount, image_url)
         return product_name, price, old_price, discount, icon, image
 
 if __name__ == "__main__":
-    epicentr_price('https://epicentrk.ua/ua/shop/heimpad-bezdrotovyi-gamepro-gpx13t-2-4g-bt-5-1-usb-switch-pc-ios-android-rgb-transparent.html')
+    epicentr_price('https://epicentrk.ua/ua/shop/sol-dlya-pmm-finish-4-kg.html')

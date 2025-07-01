@@ -1,12 +1,12 @@
 {% extends "prices_templates/base.html" %}
 {% block content %}
-     <div class="container card d-flex justify-content-center mt-3 text-center mt-5" style="border-radius: 0 !important;">
+     <div class="container card d-flex justify-content-center mt-3 text-center mt-5"
+          style="border-radius: 0 !important; background-color: rgba(255, 255, 255, 0.1); /* або rgba(0,0,0,0.1) */
+            backdrop-filter: blur(40px); color: white;">
         <h4 class="page-title mb-2">Дякуємо за реєстрацію, {{ user.username }}!</h4>
         <p class="message">
             Далі оновлення по вашому товару будуть приходити на вашу пошту автоматично.
-            Для того, щоб отримувати повідомлення також і на Телеграм, перейдіть у діалог до телеграм-боту та натисніть
-            <strong>start</strong> у <a href="https://t.me/priser_2025_bot" target="_blank">@priser_2025_bot</a>.
-         <p><a href="{% url 'prices' %}">Перейти</a> на головну сторінку</p>
+            Для того, щоб отримувати повідомлення також і на Телеграм, перейдіть у ваш профіль і виконайте інструкції.
         </p>
     </div>
 {% endblock %}

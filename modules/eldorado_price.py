@@ -3,6 +3,7 @@ import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
 import os, time
+from webdriver_manager.chrome import ChromeDriverManager
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 icon_path = os.path.join(BASE_DIR, 'icons', 'eldorado.ico')
@@ -50,9 +51,7 @@ def eldorado_price(url):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = "/usr/bin/chromium-browser" #snap
-    driver = uc.Chrome(options=options, driver_executable_path="/usr/bin/chromium-browser")
-    # driver_executable_path="/usr/bin/chromedriver"
+    driver = uc.Chrome(options=options)
 
     driver.get(url)
     time.sleep(2)
@@ -98,7 +97,8 @@ def eldorado_price(url):
             image = image_response.content
     except AttributeError:
         image = None
-    print(product_name, price, old_price, discount, image_url)
+
+    print(product_name, price, old_price, discount)
     return product_name, price, old_price, discount, icon, image
 
 if __name__ == "__main__":
