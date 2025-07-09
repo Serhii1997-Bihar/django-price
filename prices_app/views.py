@@ -92,8 +92,7 @@ def get_prices(request):
                     f"📦 {product_name}\n"
                     f"💰 Ціна: {price} UAH\n"
                     f"🔻 Попередня: {old_price_str}\n"
-                    f"🎯 Знижка: {discount_str}\n"
-                    f"{'-' * 66}\n"
+                    f"🎯 Знижка: {discount_str}"
                 )
 
                 send_mail(
@@ -173,25 +172,24 @@ def username_products(request, username):
                 old_price_str = f"{old_price} UAH" if old_price else "-"
                 discount_str = f"{discount}%" if discount else "-"
 
-                message = (
+                caption = (
                     f"🔗 {cd['link']}\n"
-                    f"{'-' * 66}\n"
                     f"📦 {product_name}\n"
                     f"💰 Ціна: {price} UAH\n"
                     f"🔻 Попередня: {old_price_str}\n"
                     f"🎯 Знижка: {discount_str}\n"
-                    f"{'-' * 66}\n"
+                    f"{'-' * 64}\n"
                 )
 
                 chat_id = person.chat_id
                 if chat_id:
-                    send_message(chat_id, message)
+                    send_message(chat_id, image, caption)
                 else:
                     print("Відсутній ID чату.")
 
                 send_mail(
                     subject=f"Discount information",
-                    message=message,
+                    message=caption,
                     from_email=pricesua_project.settings.EMAIL_HOST_USER,
                     recipient_list=[user.email],
                     fail_silently=False)
@@ -261,6 +259,12 @@ def success(request):
     user = request.user
     context = {'user': user}
     return render(request, 'account/success.html', context)
+
+def contacts(request):
+    return render(request, 'prices_templates/contacts.html')
+
+def about(request):
+    return render(request, 'prices_templates/about.html')
 
 
 

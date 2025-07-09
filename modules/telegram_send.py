@@ -1,22 +1,27 @@
 import requests
 from django.conf import settings
+from io import BytesIO
 
-def send_message(chat_id, message):
+def send_message(chat_id, image_bytes, caption):
     try:
         token = settings.TELEGRAM_BOT_TOKEN
-        url = f"https://api.telegram.org/bot{token}/sendMessage"
+        url = f"https://api.telegram.org/bot{token}/sendPhoto"
+
+        files = {
+            'photo': ('photo.jpg', BytesIO(image_bytes))
+        }
         data = {
             'chat_id': chat_id,
-            'text': message,
-            'disable_web_page_preview': True
+            'caption': caption,
+            'parse_mode': 'HTML',
         }
-        response = requests.post(url, data=data)
+
+        response = requests.post(url, data=data, files=files)
         response.raise_for_status()
         result = response.json()
+
         if not result.get('ok', False):
-            error_code = result.get('error_code')
-            if error_code == 403:
-                print(f"Chat_id: {chat_id} has blocked or deleted the bot.")
+            print(f"❌ Error {result.get('error_code')}: {result.get('description')}")
     except requests.RequestException as e:
         print(f"Telegram error: {e}")
 

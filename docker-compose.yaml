@@ -2,12 +2,6 @@ version: '3.8'
 
 services:
 
-  migrate:
-    build: .
-    command: python manage.py migrate
-    depends_on:
-      - db
-
   web:
     build: .
     restart: always
@@ -34,7 +28,7 @@ services:
     environment:
       POSTGRES_DB: working_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Hardwell1997
+      POSTGRES_PASSWORD: PostgresMalou!1997?
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

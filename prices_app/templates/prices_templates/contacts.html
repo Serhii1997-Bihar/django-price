@@ -1,0 +1,33 @@
+{% extends "prices_templates/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center mb-5">Контакти</h2>
+
+    <div class="glass-card p-4 mx-auto shadow-lg text-center" style="max-width: 500px; border-radius: 0;">
+        <ul class="list-unstyled fs-5">
+            <li class="mb-3">
+                <strong>Пошта:</strong>
+                <a href="mailto:example@email.com" class="text-decoration-none link-dark text-white">example@email.com</a>
+            </li>
+            <li class="mb-3">
+                <strong>Телефон / Viber:</strong>
+                <a href="tel:+380971112233" class="text-decoration-none link-dark text-white">+38 (097) 111-22-33</a>
+            </li>
+            <li class="mb-3">
+                <strong>Telegram:</strong>
+                <a href="https://t.me/yourusername" class="text-decoration-none link-primary text-white" target="_blank">@yourusername</a>
+            </li>
+            <li class="mb-3">
+                <strong>Twitter:</strong>
+                <a href="https://twitter.com/yourhandle" class="text-decoration-none link-primary text-white" target="_blank">@yourhandle</a>
+            </li>
+            <li>
+                <strong>Facebook:</strong>
+                <a href="https://facebook.com/yourpage" class="text-decoration-none link-primary text-white" target="_blank">facebook.com/yourpage</a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

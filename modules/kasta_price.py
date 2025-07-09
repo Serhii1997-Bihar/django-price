@@ -66,13 +66,13 @@ def kasta_price(url):
         product_name = soup.find('h1', attrs={'class':'p__pads p__title p__name m-0'}).text.strip()
 
         try:
-            price_tag = soup.find('span', attrs={'id':'productPrice'}).text.strip()
+            price_tag = soup.find('div', attrs={'id':'productPrice'}).text.strip()
             price = re.sub(r'[^0-9.]', '', price_tag)
         except AttributeError:
             price = None
 
         try:
-            old_tag = soup.find('span', attrs={'id':'productOldPrice'}).text.strip()
+            old_tag = soup.find('div', attrs={'id':'productOldPrice'}).text.strip()
             old_price = re.sub(r'[^0-9.]', '', old_tag)
         except AttributeError:
             old_price = None
@@ -106,4 +106,4 @@ def kasta_price(url):
         return product_name, price, old_price, discount, icon, image
 
 if __name__ == "__main__":
-    kasta_price('https://kasta.ua/uk/product/18220953:623/')
+    kasta_price('https://kasta.ua/uk/product/11927690:59138487/')

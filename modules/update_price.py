@@ -19,22 +19,23 @@ from modules.epicentr_price import epicentr_price
 from modules.foxtrot_price import foxtrot_price
 from modules.makeup_price import makeup_price
 from modules.stylus_price import stylus_price
-from modules.rozetka_price import rozetka_price
+from modules.laluna_price import laluna_price
 from modules.eldorado_price import eldorado_price
 from modules.intertop_price import intertop_price
 from modules.citrus_price import citrus_price
 from modules.yakaboo_price import yakaboo_price
 from modules.reserved_price import reserved_price
-from modules.bi_price import bi_price
+from modules.estro_price import estro_price
 from modules.moyo_price import moyo_price
 from modules.fua_price import fua_price
-from modules.osport_price import osport_price
+from modules.answear_price import answear_price
 from modules.deka_price import deka_price
 from modules.brain_price import brain_price
 from modules.prom_price import prom_price
 from modules.kasta_price import kasta_price
-from modules.kolgot_price import kolgot_price
+from modules.women_price import women_price
 from modules.ager_price import ager_price
+from modules.issa_price import issa_price
 from urllib.parse import urlparse
 
 SCRAPER_MAP = {
@@ -48,18 +49,19 @@ SCRAPER_MAP = {
     'intertop.ua': intertop_price,
     'makeup.com.ua': makeup_price,
     'moyo.ua': moyo_price,
-    'rozetka.com.ua': rozetka_price,
+    'laluna.com.ua': laluna_price,
     'stls.store': stylus_price,
     'yakaboo.ua': yakaboo_price,
     'eldorado.ua': eldorado_price,
-    'osport.ua': osport_price,
+    'answear.ua': answear_price,
     'reserved.com': reserved_price,
     'deka.ua': deka_price,
-    'bi.ua': bi_price,
+    'estro.ua': estro_price,
     'prom.ua': prom_price,
     'kasta.ua': kasta_price,
-    'kolgot.net': kolgot_price,
-    'ager.ua': ager_price
+    'mo-woman.com.ua': women_price,
+    'ager.ua': ager_price,
+    'issaplus.com': issa_price
 }
 
 
@@ -98,8 +100,8 @@ def add_prices():
             last_price_decimal = last_price.price
 
             if last_price and last_price_decimal == price_decimal:
-                print(f"Price for {product.product_name} без змін. Пропускаємо.")
-                print("=" * 120)
+                print(f"Ціна на {product.product_name} без змін. Пропускаємо.")
+                print("-" * 120)
                 continue
 
             PriceModel.objects.create(
@@ -114,30 +116,28 @@ def add_prices():
                 old_price_str = f"{old_price} UAH" if old_price else "-"
                 discount_str = f"{discount}%" if discount else "-"
 
-                message = (
+                caption = (
                     f"🔗 {product.link}\n"
-                    f"{'-' * 66}\n"
                     f"📦 {product_name}\n"
                     f"💰 Ціна: {price} UAH\n"
                     f"🔻 Попередня: {old_price_str}\n"
-                    f"🎯 Знижка: {discount_str}\n"
-                    f"{'-' * 66}\n"
+                    f"🎯 Знижка: {discount_str}"
                 )
 
                 chat_id = person.chat_id
                 if chat_id:
-                    send_message(chat_id, message)
+                    send_message(chat_id, image, caption)
                 else:
-                    print(f"Відсутній ID чату для {user.username}.")
+                    print("Відсутній ID чату.")
 
                 send_mail(
-                    subject="Discount information",
-                    message=message,
+                    subject=f"Discount information",
+                    message=caption,
                     from_email=pricesua_project.settings.EMAIL_HOST_USER,
                     recipient_list=[user.email],
-                    fail_silently=False
-                )
+                    fail_silently=False)
 
+            print(f"Ціна на {product.product_name} змінилась. Даємо нову ціну.")
             print("-" * 120)
 
         except Exception as e:
