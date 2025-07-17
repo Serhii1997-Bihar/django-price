@@ -36,6 +36,8 @@ from modules.kasta_price import kasta_price
 from modules.women_price import women_price
 from modules.ager_price import ager_price
 from modules.issa_price import issa_price
+from modules.ridit_price import ridit_price
+from modules.shafa_price import shafa_price
 from urllib.parse import urlparse
 
 SCRAPER_MAP = {
@@ -61,7 +63,9 @@ SCRAPER_MAP = {
     'kasta.ua': kasta_price,
     'mo-woman.com.ua': women_price,
     'ager.ua': ager_price,
-    'issaplus.com': issa_price
+    'ridit.com.ua': ridit_price,
+    'issaplus.com': issa_price,
+    'shafa.ua': shafa_price
 }
 
 

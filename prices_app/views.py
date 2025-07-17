@@ -178,7 +178,6 @@ def username_products(request, username):
                     f"💰 Ціна: {price} UAH\n"
                     f"🔻 Попередня: {old_price_str}\n"
                     f"🎯 Знижка: {discount_str}\n"
-                    f"{'-' * 64}\n"
                 )
 
                 chat_id = person.chat_id

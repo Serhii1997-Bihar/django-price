@@ -29,6 +29,10 @@ class PricesForm(forms.Form):
         ('kasta', 'kasta.ua'),
         ('women', 'mo-woman.com.ua'),
         ('ager', 'ager.ua'),
+        ('eldorado', 'eldorado.ua'),
+        ('answear', 'answear.ua'),
+        ('ridit', 'ridit.com.ua'),
+        ('shafa', 'shafa.ua'),
         ('issa', 'issaplus.com'),
         ('foxtrot', 'foxtrot.com.ua'),
         ('laluna', 'laluna.com.ua'),
@@ -41,8 +45,6 @@ class PricesForm(forms.Form):
         ('stylus', 'stylus.ua'),
         ('yakaboo', 'yakaboo.ua'),
         ('deka', 'deka.ua'),
-        ('eldorado', 'eldorado.ua'),
-        ('answear', 'answear.ua'),
 
     ]
     site = forms.ChoiceField(
@@ -144,6 +146,10 @@ class UserPricesForm(forms.Form):
         ('kasta', 'kasta.ua'),
         ('women', 'mo-woman.com.ua'),
         ('ager', 'ager.ua'),
+        ('eldorado', 'eldorado.ua'),
+        ('answear', 'answear.ua'),
+        ('ridit', 'ridit.com.ua'),
+        ('shafa', 'shafa.ua'),
         ('issa', 'issaplus.com'),
         ('foxtrot', 'foxtrot.com.ua'),
         ('laluna', 'laluna.com.ua'),
@@ -156,8 +162,6 @@ class UserPricesForm(forms.Form):
         ('stylus', 'stylus.ua'),
         ('yakaboo', 'yakaboo.ua'),
         ('deka', 'deka.ua'),
-        ('eldorado', 'eldorado.ua'),
-        ('answear', 'answear.ua'),
 
     ]
     site = forms.ChoiceField(

@@ -72,4 +72,4 @@ def reserved_price(url):
     return product_name, price, old_price, discount, icon, image
 
 if __name__ == "__main__":
-    reserved_price('https://www.reserved.com/ua/uk/stobana-baikerska-kurtka-780cd-59x')
+    reserved_price('https://www.reserved.com/ua/uk/shkiriana-kurtka-7177h-99x')
